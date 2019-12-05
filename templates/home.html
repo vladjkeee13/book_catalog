@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block main %}
+
+<!--=================================
+Hero Area
+===================================== -->
+<section class="hero-area hero-slider-1">
+    <div class="sb-slick-slider" data-slick-setting='{
+                    "autoplay": true,
+                    "fade": true,
+                    "autoplaySpeed": 3000,
+                    "speed": 3000,
+                    "slidesToShow": 1,
+                    "dots":true
+                    }'>
+
+        {% for book in books %}
+
+        {% if forloop.first %}
+        <div class="single-slide bg-shade-whisper ">
+        {% else %}
+        <div class="single-slide bg-ghost-white ">
+        {% endif %}
+            <div class="container">
+                <div class="home-content text-center text-sm-left position-relative">
+                    <div class="hero-partial-image image-right">
+                        <img src="{{ book.img.url }}" alt="{{ book.name }}"
+                            style="width: 240px; height:320px;" />
+                    </div>
+                    <div class="row no-gutters ">
+                        <div class="col-xl-6 col-md-6 col-sm-7">
+                            <div class="home-content-inner content-left-side">
+                                <h1>{{ book.name }}</h1>
+                                <h2>Cover Up Front Of Books and Leave Summary</h2>
+                                <a href="{% url 'book' book.slug %}" class="btn btn-outlined--primary">
+                                    See more
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+<br><br><br>
+<!--=================================
+Promotion Section One
+===================================== -->
+<section class="section-margin">
+    <h2 class="sr-only">Promotion Section</h2>
+    <div class="container">
+        <div class="row space-db--30">
+            <div class="col-lg-6 col-md-6 mb--30">
+                <a href="#" class="promo-image promo-overlay">
+                    <img src="/static/image/bg-images/promo-banner-with-text.jpg" alt="">
+                </a>
+            </div>
+            <div class="col-lg-6 col-md-6 mb--30">
+                <a href="#" class="promo-image promo-overlay">
+                    <img src="/static/image/bg-images/promo-banner-with-text-2.jpg" alt="">
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+<!--=================================
+CHILDREN’S BOOKS
+===================================== -->
+<section class="section-margin">
+    <div class="container">
+        <div class="section-title section-title--bordered">
+            <h2>CHILDREN’S BOOKS</h2>
+        </div>
+        <div class="product-list-slider slider-two-column product-slider multiple-row sb-slick-slider slider-border-multiple-row"
+            data-slick-setting='{
+                                    "autoplay": true,
+                                    "autoplaySpeed": 8000,
+                                    "slidesToShow":3,
+                                    "rows":2,
+                                    "dots":true
+                                }' data-slick-responsive='[
+                                    {"breakpoint":1200, "settings": {"slidesToShow": 2} },
+                                    {"breakpoint":992, "settings": {"slidesToShow": 2} },
+                                    {"breakpoint":768, "settings": {"slidesToShow": 1} },
+                                    {"breakpoint":575, "settings": {"slidesToShow": 1} },
+                                    {"breakpoint":490, "settings": {"slidesToShow": 1} }
+                                ]'>
+            {% for book in children_books %}
+
+            <div class="single-slide">
+                <div class="product-card card-style-list">
+                    <div class="card-image">
+                        <img src="{{ book.img.url }}" alt="{{ book.name }}"
+                            style="width: 70px; height:100px;">
+                    </div>
+                    <div class="product-card--body">
+                        <div class="product-header">
+                            <h3><a href="{% url 'book' book.slug %}">{{ book.name }}</a></h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% endfor %}
+
+
+        </div>
+    </div>
+</section>
+<!--=================================
+ARTS & PHOTOGRAPHY BOOKS
+===================================== -->
+{% include 'some_books.html' with h2='ARTS BOOKS' %}
+<!--=================================
+    Promotion Section Three
+===================================== -->
+<section class="section-margin">
+    <div class="promo-wrapper promo-type-three">
+        <a href="index.html#" class="promo-image promo-overlay bg-image"
+           data-bg="/static/image/bg-images/promo-banner-full.jpg">
+        </a>
+        <div class="promo-text w-100 ml-0">
+            <div class="container">
+                <div class="row w-100">
+                    <div class="col-lg-7">
+                        <h2>I Love This Idea!</h2>
+                        <h3>Cover up front of book and
+                            leave summary</h3>
+                        <a href="index.html#" class="btn btn--yellow">$78.09 - Learn More</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock main %}

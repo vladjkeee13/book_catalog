@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+
+{% block main %}
+
+<section class="breadcrumb-section">
+	<h2 class="sr-only">Site Breadcrumb</h2>
+	<div class="container">
+		<div class="breadcrumb-contents">
+			<nav aria-label="breadcrumb">
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+					<li> &nbsp;&#8250; Shop</li>
+				</ol>
+			</nav>
+		</div>
+	</div>
+</section>
+<main class="inner-page-sec-padding-bottom">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-9 order-lg-2">
+				<h1>Books about {{ object.name }}</h1>
+				<br>
+				<div class="shop-toolbar with-sidebar mb--30">
+					<div class="row align-items-center">
+						<div class="col-lg-2 col-md-2 col-sm-6">
+							<!-- Product View Mode -->
+							<div class="product-view-mode">
+								<a href="#"
+								   class="sorting-btn active" data-target="grid">
+									<i class="fas fa-th"></i></a>
+								<a href="#"
+								   class="sorting-btn" data-target="list">
+									<i class="fas fa-list"></i></a>
+							</div>
+						</div>
+						<div class="col-xl-6 col-md-6 col-sm-8  mt--10 mt-sm--0">
+							<span class="toolbar-status">
+								Showing {% widthratio object_list.count 1 page_obj.number|add:-1 %}
+								to {% widthratio page_obj.object_list.count 1 page_obj.number %}
+								of {{ paginator.count }} ({{ paginator.num_pages }} Pages)
+							</span>
+						</div>
+						<div class="col-lg-4 col-md-4 col-sm-6 mt--10 mt-md--0 ">
+							<div class="sorting-selection">
+								<span>Sort By: book name</span>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="shop-product-wrap grid with-pagination row space-db--30 shop-border">
+
+					{% for book in book_list %}
+
+					<div class="col-lg-4 col-sm-6">
+						<div class="product-card">
+							<div class="product-grid-content">
+								<div class="product-card--body">
+									<div class="card-image">
+										<a href="{% url 'book' book.slug %}">
+											<img src="{{ book.img.url }}" alt="{{ book.name }}"
+												style="width: 120px; height:200px;">
+										</a>
+									</div>
+								</div>
+								<br>
+								<h3><a href="{% url 'book' book.slug %}">{{ book.name | truncatechars:50 }}</a></h3>
+							</div>
+							<div class="product-list-content">
+								<div class="card-image">
+									<img src="{{ book.img.url }}" alt="{{ book.name }}">
+								</div>
+								<div class="product-card--body">
+									<div class="product-header">
+										<a href="#" class="author">
+											Gpple
+										</a>
+										<h3><a href="{% url 'book' book.slug %}" tabindex="0">
+											{{ book.name }}
+										</a></h3>
+									</div>
+									<article>
+										<h2 class="sr-only">Card List Article</h2>
+										{{ book.description | safe | truncatewords_html:40 }}
+										{% for category in book.cat.all %}
+											<p>{{category.name}}</p>
+										{% endfor %}
+									</article>
+									<div class="rating-block">
+										<span class="fas fa-star star_on"></span>
+										<span class="fas fa-star star_on"></span>
+										<span class="fas fa-star star_on"></span>
+										<span class="fas fa-star star_on"></span>
+										<span class="fas fa-star "></span>
+										<span>by 18 Reviews</span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					{% endfor %}
+
+				</div>
+				{% include 'paginator.html' %}
+			</div>
+			<div class="col-lg-3  mt--40 mt-lg--0">
+				<div class="inner-page-sidebar">
+					<!-- Accordion -->
+					<div class="single-block">
+						<h3 class="sidebar-title">Authors</h3>
+						<ul class="sidebar-menu--shop">
+							{% for author in authors %}
+							<li><a href="?author={{author}}">{{ author }}</a></li>
+							{% endfor %}
+
+						</ul>
+					</div>
+					<!-- Promotion Block -->
+					<div class="single-block">
+						<a href="#" class="promo-image sidebar">
+							<img src="/static/image/others/home-side-promo.jpg" alt="">
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</main>
+
+{% endblock main %}

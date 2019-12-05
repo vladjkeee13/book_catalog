@@ -1,0 +1,8 @@
+.slider-border-multiple-row.product-list-slider .slick-slide .product-card {
+    display: flex;
+    align-items: center;
+}
+
+.slider-border-multiple-row .single-slide .product-card--body {
+    width: 80%;
+}

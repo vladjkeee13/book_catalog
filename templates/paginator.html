@@ -1,0 +1,35 @@
+{% if is_paginated %}
+
+<!-- Pagination Block -->
+<div class="row pt--30">
+    <div class="col-md-12">
+        <div class="pagination-block">
+            <ul class="pagination-btns flex-center">
+                <li><a href="?page=1" class="single-btn prev-btn "></a></li>
+
+                {% if page_obj.has_previous %}
+                <li><a href="?page={{ page_obj.previous_page_number }}" class="single-btn prev-btn ">&laquo;</a></li>
+                {% endif %}
+
+
+                {% for i in paginator.page_range %}
+                    {% if forloop.counter|add:5 > page_obj.number and forloop.counter < page_obj.number|add:5 %}
+                        {% if page_obj.number == i %}
+                            <li class="active"><a class="single-btn">{{i}}</a></li>
+                        {% else %}
+                            <li><a href="?page={{i}}" class="single-btn">{{i}}</a></li>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                <li><a href="?page={{ page_obj.next_page_number }}" class="single-btn next-btn">&raquo;</a></li>
+                {% endif %}
+
+                <li><a href="?page={{ paginator.num_pages }}" class="single-btn next-btn"></a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+{% endif %}

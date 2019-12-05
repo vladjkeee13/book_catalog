@@ -1,0 +1,181 @@
+{% extends 'base.html' %}
+
+{% block main %}
+
+<section class="breadcrumb-section">
+	<h2 class="sr-only">Site Breadcrumb</h2>
+	<div class="container">
+		<div class="breadcrumb-contents">
+			<nav aria-label="breadcrumb">
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item"><a href="index.html">Home</a></li>
+					<li class="breadcrumb-item active">Product Details</li>
+				</ol>
+			</nav>
+		</div>
+	</div>
+</section>
+<main class="inner-page-sec-padding-bottom">
+<div class="container">
+	<div class="row mb--60">
+		<div class="col-lg-5 mb--30">
+			<!-- Product Details Slider Big Image-->
+			<div class="product-details-slider sb-slick-slider arrow-type-two" data-slick-setting='{
+				  "slidesToShow": 1,
+				  "arrows": false,
+				  "fade": true,
+				  "draggable": false,
+				  "swipe": false,
+				  "asNavFor": ".product-slider-nav"
+				  }'>
+				<div class="single-slide">
+					<img src="{{ book.img.url }}" alt="{{ book.name }}"
+						style="width: 450px; height: 600px;">
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-7">
+			<div class="product-details-info pl-lg--30 ">
+				<p class="tag-block">Tags: <a href="product-details-affiliate.html#">Movado</a>, <a href="product-details-affiliate.html#">Omega</a></p>
+				<h3 class="product-title">{{ book.name }}</h3>
+				<ul class="list-unstyled">
+					<li>Author: <span class="list-value"> {{ book.author | upper }}</span></li>
+					<li>Pages: <span class="list-value"> {{ book.pages }}</span></li>
+					<li>Published: <span class="list-value"> {{ book.published }}</span></li>
+					<li>ISBN: <span class="list-value"> {{ book.isbn }}</span></li>
+					<li>Language: <span class="list-value"> {{ book.language }}</span></li>
+				</ul>
+				<div class="rating-widget">
+					<div class="rating-block">
+						<span class="fas fa-star star_on"></span>
+						<span class="fas fa-star star_on"></span>
+						<span class="fas fa-star star_on"></span>
+						<span class="fas fa-star star_on"></span>
+						<span class="fas fa-star "></span>
+					</div>
+					<div class="review-widget">
+						<span>calculate by 15 Reviews</span>
+					</div>
+				</div>
+				<article class="product-details-article">
+					<h4 class="sr-only">Product Summery</h4>
+					{{ book.description | safe | truncatewords_html:80 }}
+				</article>
+				<div class="add-to-cart-row">
+					<div class="add-cart-btn">
+						<a href="product-details-affiliate.html"
+						   class="btn btn-outlined--primary">Buy Now</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="sb-custom-tab review-tab section-padding">
+		<ul class="nav nav-tabs nav-style-2" id="myTab2" role="tablist">
+			<li class="nav-item">
+				<a class="nav-link active" id="tab1" data-toggle="tab" href="#tab-1" role="tab"
+					aria-controls="tab-1" aria-selected="true">
+					DESCRIPTION
+				</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" id="tab2" data-toggle="tab" href="#tab-2" role="tab"
+					aria-controls="tab-2" aria-selected="true">
+					REVIEWS ({{ reviews.count }})
+				</a>
+			</li>
+		</ul>
+		<div class="tab-content space-db--20" id="myTabContent">
+			<div class="tab-pane fade show active" id="tab-1" role="tabpanel" aria-labelledby="tab1">
+				<article class="review-article">
+					<h1 class="sr-only">{{ book.name }}</h1>
+					{{ book.description | safe }}
+				</article>
+			</div>
+			<div class="tab-pane fade" id="tab-2" role="tabpanel" aria-labelledby="tab2">
+				<div class="review-wrapper">
+					{% if reviews %}
+						<h2 class="title-lg mb--20">REVIEWS FOR THIS BOOK</h2>
+						{% for review in reviews %}
+						<div class="review-comment mb--20">
+							<div class="text">
+								<div class="rating-block mb--15">
+									{% for i in range %}
+										{% if review.rating > i %}
+										<span class="ion-android-star-outline star_on"></span>
+										{% else %}
+										<span class="ion-android-star-outline"></span>
+										{% endif %}
+									{% endfor %}
+								</div>
+								<h6 class="author">{{review.name}} – <span class="font-weight-400">{{review.published}}</span>
+								</h6>
+								{{review.comment | safe}}
+							</div>
+						</div>
+						{% endfor %}
+					{% endif %}
+					<h2 class="title-lg mb--20 pt--15">ADD A REVIEW</h2>
+					<div class="rating-row pt-2">
+						<form action="{% url 'book' object.slug %}" method="post">
+						{% csrf_token %}
+						<p class="d-block">Your Rating</p>
+						<span class="rating-widget-block">
+							<input type="radio" name="rating" value="1" id="star1">
+							<label for="star1"></label>
+							<input type="radio" name="rating" value="2" id="star2">
+							<label for="star2"></label>
+							<input type="radio" name="rating" value="3" id="star3">
+							<label for="star3"></label>
+							<input type="radio" name="rating" value="4" id="star4">
+							<label for="star4"></label>
+							<input type="radio" name="rating" value="5" id="star5">
+							<label for="star5"></label>
+						</span>
+						<br><br>
+						<div class="row">
+							<div class="col-12">
+								<div class="form-group">
+									<label for="message">Comment</label>
+									<textarea name="comment" id="message" cols="30" rows="10"
+										class="form-control"></textarea>
+								</div>
+							</div>
+							<div class="col-lg-4">
+								<div class="form-group">
+									<label for="name">Name *</label>
+									<input type="text" id="name" name="name" class="form-control">
+								</div>
+							</div>
+							<div class="col-lg-4">
+								<div class="form-group">
+									<label for="email">Email *</label>
+									<input type="text" id="email" name="email" class="form-control">
+								</div>
+							</div>
+							<div class="col-lg-4">
+								<div class="form-group">
+									<label for="website">Website</label>
+									<input type="text" id="website" name="website" class="form-control">
+								</div>
+							</div>
+							<div class="col-lg-4">
+								<div class="submit-btn">
+									<button type="submit" class="btn btn-black">Post Comment</button>
+								</div>
+							</div>
+						</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!--=================================
+    RELATED PRODUCTS BOOKS
+===================================== -->
+{% include 'some_books.html' with h2='RELATED BOOKS' %}
+</main>
+
+{% endblock main %}
