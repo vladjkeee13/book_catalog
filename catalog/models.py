@@ -1,9 +1,11 @@
+from django.contrib.auth.models import User
 from django.db import models
 
 
 # Create your models here.
 
 class Category(models.Model):
+
     name = models.CharField(max_length=255)
     slug = models.CharField(max_length=255)
     description = models.TextField()
@@ -13,6 +15,7 @@ class Category(models.Model):
 
 
 class Character(models.Model):
+
     name = models.CharField(max_length=255)
 
     def __str__(self):
@@ -20,6 +23,7 @@ class Character(models.Model):
 
 
 class Book(models.Model):
+
     name = models.CharField(max_length=255, db_index=True)
     slug = models.CharField(max_length=255, unique=True)
     description = models.TextField()
@@ -29,6 +33,7 @@ class Book(models.Model):
     published = models.DateField()
     isbn = models.CharField(max_length=255)
     language = models.CharField(max_length=255)
+    price = models.DecimalField(max_digits=9, decimal_places=2, default=0.00)
 
     img_source = models.URLField(max_length=255, null=True)
     book_source = models.URLField(max_length=255, null=True, blank=True)
@@ -45,15 +50,14 @@ class Book(models.Model):
 
 
 class Reviews(models.Model):
-    name = models.CharField(max_length=255, db_index=True)
-    email = models.EmailField()
+
+    author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     comment = models.TextField()
-    rating = models.IntegerField()
-    website = models.URLField()
+    rating = models.IntegerField(null=True)
     published = models.DateTimeField(auto_now_add=True)
-    moderated = models.BooleanField(default=False)
 
-    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, null=True)
 
-    def __str__(self):
-        return self.name
+    class Meta:
+        verbose_name_plural = 'reviews'
+        verbose_name = 'review'

@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django_summernote',
     'catalog',
     'task',
+    'cart'
 ]
 
 MIDDLEWARE = [
@@ -68,6 +69,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'catalog.context_processors.menu',
+                'catalog.context_processors.cart'
             ],
         },
     },

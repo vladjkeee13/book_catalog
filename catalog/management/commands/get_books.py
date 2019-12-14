@@ -1,3 +1,4 @@
+import random
 import sys
 from datetime import datetime
 from slugify import slugify
@@ -82,6 +83,7 @@ def crawler(url):
         'language': language,
         'published': published,
         'img': image_name,
+        'price': random.uniform(5, 47)
     }
 
     try:
@@ -132,4 +134,4 @@ class Command(BaseCommand):
         from task.models import Task
 
         task = Task.objects.create(name='run_scraper')
-        run_crawler(300, 500, task)
+        run_crawler(100, 300, task)

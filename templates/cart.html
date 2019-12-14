@@ -1,0 +1,120 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <title> Cart </title>
+</head>
+
+<body>
+
+    <h3 class="text-center"> Your bag </h3>
+    <br>
+
+    {% if object.items.count == 0 %}
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <h4 class="text-center"> Your bag is empty </h4>
+
+    {% else %}
+
+        <table class="table">
+            <tr>
+                <td class="text-center"> <strong>  </strong> </td>
+                <td class="text-center"> <strong> Product </strong> </td>
+                <td class="text-center"> <strong> Quantity </strong> </td>
+                <td class="text-center"> <strong> Price </strong> </td>
+                <td class="text-center">  </td>
+            </tr>
+
+            {% for item in object.items.all %}
+
+                <tr>
+                    <td class="text-center"> <img src="../media/{{ item.book.img }}" alt="{{ item.book.name }}" style="width: 100px; height: 150px"> </td>
+                    <td class="text-center" style="vertical-align:middle;"> {{ item.book.name }} </td>
+                    <td class="text-center" style="vertical-align:middle;">
+                        <form action="" method="GET">
+                            <input type="number" name="quantity" class="cart-item-qty" data-id='{{ item.id }}' value="{{ item.quantity }}" min="1" style="width: 40px;"/>
+                        </form>
+                    </td>
+                    <td class="text-center" id="cart-item-total-{{ item.id }}" style="vertical-align:middle;"> {{ item.item_total }}$ </td>
+                    <td class="text-center" style="vertical-align:middle;">
+                        <a href="{% url 'cart:remove-item-from-cart' %}?item_id={{ item.id }}">
+{#                        class="remove_from_cart" data-id="{{ item.size.product.id }}#}
+                        <button class="btn btn-default"> Remove </button>
+                        </a>
+                    </td>
+                </tr>
+
+            {% endfor %}
+
+            <tr>
+                <td>  </td>
+                <td class="text-center"> <strong> Sub-total: </strong> </td>
+                <td class="text-center" id="cart-total-price"> <strong> {{ object.cart_total }} </strong> </td>
+                <td> </td>
+                <td class="text-center">  <input style="width: 100px" type="submit" class="btn btn-success" id="add-to-cart-button" value="Buy"/> </td>
+            </tr>
+
+    </table>
+
+    {% endif %}
+
+
+    <script>
+
+     $(document).ready(function () {
+
+        $('.cart-item-qty').click(function () {
+
+            var qty = $(this).val();
+            var item_id = $(this).attr('data-id');
+
+            var data = {
+                qty: qty,
+                item_id: item_id
+            };
+            $.ajax({
+                type: "GET",
+                url: '{% url 'cart:change-item-quantity' %}',
+                data: data,
+                success: function (data) {
+                    $('#cart-item-total-'+item_id).html(parseFloat(data.item_total).toFixed(2) + '$');
+                    $('#cart-total-price').html(parseFloat(data.cart_total_price).toFixed(2) + '$');
+                }
+
+            });
+        });
+     });
+
+        {#$(".remove_from_cart" ).on( "click", function(e) {#}
+        {#    e.preventDefault();#}
+        {#    var item_id = $(this).attr('data-id');#}
+        {#    var data = {#}
+        {#        item_id: item_id#}
+        {#    };#}
+        {#    $.ajax({#}
+        {#        type: "GET",#}
+        {#        url: '{% url 'cart:remove-item-from-cart' %}',#}
+        {#        data: data,#}
+        {#        success: function (data) {#}
+        {#            $('#cart_count').html(data.cart_total)#}
+        {#        }#}
+        {#     });#}
+        {#    });#}
+        {# });#}
+
+    </script>
+</body>
+</html>
+

@@ -14,9 +14,8 @@ class BookAdmin(SummernoteModelAdmin):
 
 class ReviewAdmin(SummernoteModelAdmin):
     summernote_fields = ('comment',)
-    list_filter = ['published', 'moderated']
-    list_display = ['name', 'email', 'website', 'published', 'moderated']
-    list_editable = ['moderated']
+    list_filter = ['published', ]
+    list_display = ['author', 'published']
     search_fields = ['name', 'description']
 
 

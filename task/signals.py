@@ -12,7 +12,7 @@ def handler_run_scraper(sender, instance, **kwargs):
             start, end = int(start), int(end)
         except Exception as e:
             print(e, type(e))
-            start, end = 300, 500
+            start, end = 100, 300
         Thread(target=run_crawler, args=(start, end, instance)).start()
 
 

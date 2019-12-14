@@ -44,6 +44,7 @@
 					<li>Published: <span class="list-value"> {{ book.published }}</span></li>
 					<li>ISBN: <span class="list-value"> {{ book.isbn }}</span></li>
 					<li>Language: <span class="list-value"> {{ book.language }}</span></li>
+					<li>Price: <span class="list-value"> {{ book.price }} $</span></li>
 				</ul>
 				<div class="rating-widget">
 					<div class="rating-block">
@@ -53,20 +54,21 @@
 						<span class="fas fa-star star_on"></span>
 						<span class="fas fa-star "></span>
 					</div>
-					<div class="review-widget">
-						<span>calculate by 15 Reviews</span>
-					</div>
+
 				</div>
 				<article class="product-details-article">
 					<h4 class="sr-only">Product Summery</h4>
 					{{ book.description | safe | truncatewords_html:80 }}
 				</article>
-				<div class="add-to-cart-row">
-					<div class="add-cart-btn">
-						<a href="product-details-affiliate.html"
-						   class="btn btn-outlined--primary">Buy Now</a>
-					</div>
-				</div>
+				<form name="add_to_cart" action="{% url 'cart:add-to-cart'%}" id="add_to_cart" method="get" >
+                    <input type="hidden" name="book_id" value="{{ object.id }}"/>
+                    {% if request.user.is_authenticated %}
+                        <input type="submit" class="btn btn-success" id="add-to-cart-button" value="Add to cart"/>
+                    {% else %}
+                        <p style="color: darkslategray"> Only registered users can order goods! </p>
+                    {% endif %}
+                    <br>
+                </form>
 			</div>
 		</div>
 	</div>
@@ -102,13 +104,11 @@
 								<div class="rating-block mb--15">
 									{% for i in range %}
 										{% if review.rating > i %}
-										<span class="ion-android-star-outline star_on"></span>
-										{% else %}
-										<span class="ion-android-star-outline"></span>
+										<span class="fas fa-star star_on"></span>
 										{% endif %}
 									{% endfor %}
 								</div>
-								<h6 class="author">{{review.name}} – <span class="font-weight-400">{{review.published}}</span>
+								<h6 class="author">{{review.author.username}} – <span class="font-weight-400">{{review.published}}</span>
 								</h6>
 								{{review.comment | safe}}
 							</div>
@@ -117,19 +117,18 @@
 					{% endif %}
 					<h2 class="title-lg mb--20 pt--15">ADD A REVIEW</h2>
 					<div class="rating-row pt-2">
-						<form action="{% url 'book' object.slug %}" method="post">
-						{% csrf_token %}
+						<form role="form" action="{% url 'review' object.slug %}" method="post"> {% csrf_token %}
 						<p class="d-block">Your Rating</p>
 						<span class="rating-widget-block">
-							<input type="radio" name="rating" value="1" id="star1">
+							<input type="radio" name="rating" value="5" id="star1">
 							<label for="star1"></label>
-							<input type="radio" name="rating" value="2" id="star2">
+							<input type="radio" name="rating" value="4" id="star2">
 							<label for="star2"></label>
 							<input type="radio" name="rating" value="3" id="star3">
 							<label for="star3"></label>
-							<input type="radio" name="rating" value="4" id="star4">
+							<input type="radio" name="rating" value="2" id="star4">
 							<label for="star4"></label>
-							<input type="radio" name="rating" value="5" id="star5">
+							<input type="radio" name="rating" value="1" id="star5">
 							<label for="star5"></label>
 						</span>
 						<br><br>
@@ -142,26 +141,8 @@
 								</div>
 							</div>
 							<div class="col-lg-4">
-								<div class="form-group">
-									<label for="name">Name *</label>
-									<input type="text" id="name" name="name" class="form-control">
-								</div>
-							</div>
-							<div class="col-lg-4">
-								<div class="form-group">
-									<label for="email">Email *</label>
-									<input type="text" id="email" name="email" class="form-control">
-								</div>
-							</div>
-							<div class="col-lg-4">
-								<div class="form-group">
-									<label for="website">Website</label>
-									<input type="text" id="website" name="website" class="form-control">
-								</div>
-							</div>
-							<div class="col-lg-4">
 								<div class="submit-btn">
-									<button type="submit" class="btn btn-black">Post Comment</button>
+									<input type="submit" class="btn btn-success" value="Add comment"/>
 								</div>
 							</div>
 						</div>

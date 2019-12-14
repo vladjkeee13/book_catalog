@@ -1,6 +1,10 @@
-from django.shortcuts import render
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.shortcuts import render, redirect
 from django.http import Http404
-from django.views.generic import TemplateView, ListView, DetailView
+from django.urls import reverse
+from django.views.generic import TemplateView, ListView, DetailView, CreateView, FormView
 from django.views.generic.detail import SingleObjectMixin
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect
@@ -8,7 +12,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.contrib import messages
 
 from .models import Book, Category, Reviews
-from .forms import ReviewForm
+from .forms import ReviewForm, RegistrationForm, LoginForm
 
 
 class HomeView(TemplateView):
@@ -61,29 +65,29 @@ class BookView(DetailView):
         context = super().get_context_data(**kwargs)
         context['art_books'] = Book.objects.all()[10:20]
         context['reviews'] = Reviews.objects.filter(
-            book=self.object, moderated=True).order_by('-published')[:10]
+            book=self.object).order_by('-published')[:10]
         return context
 
-    def post(self, *args, **kwargs):
-        self.object = self.get_object()
-        self.form = ReviewForm(self.request.POST)
-
-        context = self.get_context_data(**kwargs)
-
-        if self.form.is_valid():
-            self.form.cleaned_data['book'] = self.object
-            Reviews.objects.create(**self.form.cleaned_data)
-            messages.add_message(
-                self.request, messages.INFO,
-                'Thanks! Your review is on moderation.'
-            )
-        else:
-            context['form'] = self.form
-            messages.add_message(
-                self.request, messages.INFO,
-                'Incorrect data'
-            )
-        return self.render_to_response(context)
+    # def post(self, *args, **kwargs):
+    #     self.object = self.get_object()
+    #     self.form = ReviewForm(self.request.POST)
+    #
+    #     context = self.get_context_data(**kwargs)
+    #
+    #     if self.form.is_valid():
+    #         self.form.cleaned_data['book'] = self.object
+    #         Reviews.objects.create(**self.form.cleaned_data)
+    #         messages.add_message(
+    #             self.request, messages.INFO,
+    #             'Thanks! Your review is on moderation.'
+    #         )
+    #     else:
+    #         context['form'] = self.form
+    #         messages.add_message(
+    #             self.request, messages.INFO,
+    #             'Incorrect data'
+    #         )
+    #     return self.render_to_response(context)
 
 
 class SearchView(ListView):
@@ -111,3 +115,56 @@ class SearchView(ListView):
 
 def robots_view(request):
     return render(request, 'robots.txt', {}, content_type="text/plain")
+
+
+# @method_decorator(login_required, name='dispatch')
+@method_decorator(csrf_protect, name='dispatch')
+class AddCommentView(CreateView):
+
+    form_class = ReviewForm
+
+    def form_valid(self, form):
+
+        response = super().form_valid(form)
+        book = Book.objects.get(slug=self.kwargs['slug'])
+        self.object = form.save(user=self.request.user, book=book)
+
+        return response
+
+    def get_success_url(self):
+        return reverse('book', kwargs={'slug': self.kwargs.get('slug')})
+
+
+class RegistrationView(FormView):
+
+    template_name = 'registration.html'
+    form_class = RegistrationForm
+
+    def form_valid(self, form, backend='django.contrib.auth.backends.ModelBackend'):
+
+        form.save()
+
+        user = User.objects.get(username=form.cleaned_data['username'])
+
+        if user:
+            login(self.request, user, backend='django.contrib.auth.backends.ModelBackend')
+
+        return redirect('/')
+
+
+class LoginView(FormView):
+
+    template_name = 'login.html'
+    form_class = LoginForm
+
+    def form_valid(self, form):
+
+        username = form.cleaned_data['username']
+        password = form.cleaned_data['password']
+
+        login_user = authenticate(username=username, password=password)
+
+        if login_user:
+            login(self.request, login_user)
+
+        return redirect('/')
