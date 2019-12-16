@@ -55,7 +55,8 @@ class AddToCartView(View):
         cart.cart_total = new_cart_total
         cart.save()
 
-        return redirect(reverse('book', kwargs={'slug': book.slug}))
+        # return redirect(reverse('book', kwargs={'slug': book.slug}))
+        return JsonResponse({'cart_total': cart.items.count(), 'cart_total_price': cart.cart_total})
 
 
 class RemoveItemFromCartView(View):

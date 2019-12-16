@@ -60,15 +60,19 @@
 					<h4 class="sr-only">Product Summery</h4>
 					{{ book.description | safe | truncatewords_html:80 }}
 				</article>
+
+
 				<form name="add_to_cart" action="{% url 'cart:add-to-cart'%}" id="add_to_cart" method="get" >
                     <input type="hidden" name="book_id" value="{{ object.id }}"/>
                     {% if request.user.is_authenticated %}
-                        <input type="submit" class="btn btn-success" id="add-to-cart-button" value="Add to cart"/>
+                        <input type="button" class="btn btn-success" id="add-to-cart-button" value="Add to cart"/>
                     {% else %}
                         <p style="color: darkslategray"> Only registered users can order goods! </p>
                     {% endif %}
                     <br>
                 </form>
+
+
 			</div>
 		</div>
 	</div>
@@ -153,10 +157,29 @@
 		</div>
 	</div>
 </div>
+
+ <script>
+
+         $('#add_to_cart').submit(function(e){
+    e.preventDefault();
+    $.ajax({
+        url: '{% url 'cart:add-to-cart' %}',
+        type: "GET",
+        data:$('#add_to_cart').serialize(),
+        success:function(){
+            $('#cart_count').html(data.cart_total)
+        }
+    });
+});
+    </script>
+
 <!--=================================
     RELATED PRODUCTS BOOKS
 ===================================== -->
 {% include 'some_books.html' with h2='RELATED BOOKS' %}
 </main>
 
+
+
 {% endblock main %}
+

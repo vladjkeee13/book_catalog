@@ -34,9 +34,7 @@
                             <li class="menu-item">
                                 <a href="#">Contact</a>
                             </li>
-                            <li class="menu-item">
-                                <a href="{% url "cart:cart" %}">Cart <span class="badge badge-success" id="cart_count"> {{ cart.items.count }} </span></a>
-                            </li>
+                           <li><a href="{% url "cart:cart" %}">Cart <span class="badge" id="cart_count"> {{ cart.items.count }} </span></a></li>
 
                         </ul>
                     </div>

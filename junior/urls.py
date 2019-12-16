@@ -26,7 +26,7 @@ from catalog import views
 urlpatterns = [
 
     path('', views.HomeView.as_view(), name='home'),
-    path('', include(("cart.urls", "cart"), namespace="cart")),
+    path('', include(("cart.urls", "cart"), namespace="cart"), name="cart"),
     path('<slug:slug>', views.CatalogView.as_view(), name='category'),
     path('book/<slug:slug>', views.BookView.as_view(), name='book'),
     path('search/', views.SearchView.as_view(), name='search'),
